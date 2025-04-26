@@ -6,6 +6,7 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   JoinColumn,
+  OneToOne,
 } from 'typeorm';
 import {
   IsNotEmpty,
@@ -17,6 +18,7 @@ import {
   IsNumber,
 } from 'class-validator';
 import { Goal } from '../../goals/entities/goal.entity';
+import { Category } from 'src/modules/category/entities/category.entity';
 
 @Entity()
 export class Task {
@@ -53,6 +55,16 @@ export class Task {
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @Column({ name: 'category_id', nullable: true })
+  @IsOptional()
+  @IsInt()
+  category_id: number;
+
+  @ManyToOne(() => Category, (category) => category.tasks, {
+    nullable: true,
+  })
+  Categoery: Category;
 
   @Column({ name: 'goal_id', nullable: true, default: null })
   @IsOptional()

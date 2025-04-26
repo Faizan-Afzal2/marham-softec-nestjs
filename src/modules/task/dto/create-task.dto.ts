@@ -20,9 +20,9 @@ export class CreateTaskDto {
   @IsDateString()
   dueDate?: Date;
 
-  //   @IsOptional()
-  //   @IsString()
-  //   moodSuggestion?: string;
+  @IsOptional()
+  @IsString()
+  category_id?: number;
 
   @IsOptional()
   @IsInt()
