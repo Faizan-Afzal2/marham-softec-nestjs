@@ -4,6 +4,7 @@ import { LoginDto } from './dto/login.dto';
 import { Request } from 'express';
 import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
 import { CreateUserDto } from '../user/dto/create-user.dto';
+import { User } from '../user/entities/user.entity';
 
 @Controller('auth')
 export class AuthController {
@@ -22,7 +23,9 @@ export class AuthController {
   @UseGuards(JwtAuthGuard)
   @Get('me')
   me(@Req() req: Request) {
-    const user = req.user as any;
-    return this.authService.me(user.sub);
+    const user = req.user as User;
+    console.log(user);
+
+    return this.authService.me(user.id);
   }
 }

@@ -17,8 +17,8 @@ import {
   IsInt,
   IsNumber,
 } from 'class-validator';
-import { Goal } from '../../goals/entities/goal.entity';
 import { Category } from 'src/modules/category/entities/category.entity';
+import { User } from 'src/modules/user/entities/user.entity';
 
 @Entity()
 export class Task {
@@ -56,25 +56,27 @@ export class Task {
   @UpdateDateColumn()
   updatedAt: Date;
 
-  @Column({ name: 'category_id', nullable: true })
+  @Column({ name: 'user_id' })
+  @IsInt()
+  userId: number;
+
+  @ManyToOne(() => User, (user) => user.tasks, {})
+  @JoinColumn({ name: 'user_id' })
+  user: User;
+
+  @Column({ name: 'category_id' })
   @IsOptional()
   @IsInt()
-  category_id: number;
+  categoryId: number;
 
   @ManyToOne(() => Category, (category) => category.tasks, {
     nullable: true,
   })
-  Categoery: Category;
+  @JoinColumn({ name: 'category_id' })
+  categoery: Category;
 
   @Column({ name: 'goal_id', nullable: true, default: null })
   @IsOptional()
   @IsInt()
   goalId?: number;
-
-  @ManyToOne(() => Goal, (goal) => goal.tasks, {
-    nullable: true,
-    onDelete: 'CASCADE',
-  })
-  @JoinColumn({ name: 'goal_id' })
-  goal?: Goal;
 }

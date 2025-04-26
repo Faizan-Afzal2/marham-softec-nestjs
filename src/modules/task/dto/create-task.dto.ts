@@ -5,12 +5,17 @@ import {
   IsBoolean,
   IsDateString,
   IsInt,
+  IsNumber,
 } from 'class-validator';
 
 export class CreateTaskDto {
   @IsNotEmpty()
   @IsString()
   title: string;
+
+  @IsOptional()
+  @IsNumber()
+  userId?: number;
 
   @IsOptional()
   @IsString()
@@ -21,8 +26,8 @@ export class CreateTaskDto {
   dueDate?: Date;
 
   @IsOptional()
-  @IsString()
-  category_id?: number;
+  @IsNumber()
+  categoryId?: number;
 
   @IsOptional()
   @IsInt()

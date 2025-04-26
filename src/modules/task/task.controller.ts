@@ -6,10 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  UseGuards,
+  Req,
 } from '@nestjs/common';
 import { TaskService } from './task.service';
 import { CreateTaskDto } from './dto/create-task.dto';
 import { UpdateTaskDto } from './dto/update-task.dto';
+import { JwtAuthGuard } from 'src/common/guards/jwt-auth.guard';
+import { User } from '../user/entities/user.entity';
 
 @Controller('task')
 export class TaskController {
@@ -20,10 +24,11 @@ export class TaskController {
     return this.taskService.parseTaskInput(body.text);
   }
 
+  @UseGuards(JwtAuthGuard)
   @Post('create-task')
-  create(@Body() createTaskDto: CreateTaskDto) {
-    console.log('IN function');
-
+  create(@Req() req: any, @Body() createTaskDto: CreateTaskDto) {
+    const user = req.user as User;
+    createTaskDto.userId = user.id;
     return this.taskService.createTask(createTaskDto);
   }
 

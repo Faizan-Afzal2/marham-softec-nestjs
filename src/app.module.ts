@@ -4,7 +4,6 @@ import { DatabaseModule } from './database/database.module';
 import { UserModule } from './modules/user/user.module';
 import { AuthModule } from './modules/auth/auth.module';
 import { TaskModule } from './modules/task/task.module';
-import { GoalsModule } from './modules/goals/goals.module';
 import { CategoryModule } from './modules/category/category.module';
 
 @Module({
@@ -14,7 +13,6 @@ import { CategoryModule } from './modules/category/category.module';
     UserModule,
     AuthModule,
     TaskModule,
-    GoalsModule,
     CategoryModule,
   ],
 })

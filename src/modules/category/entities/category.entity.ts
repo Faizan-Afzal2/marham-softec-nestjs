@@ -17,7 +17,7 @@ export class Category {
   @IsString()
   color: string;
 
-  @OneToMany(() => Task, (task) => task.Categoery, {
+  @OneToMany(() => Task, (task) => task.categoery, {
     nullable: true,
   })
   tasks?: Category;
