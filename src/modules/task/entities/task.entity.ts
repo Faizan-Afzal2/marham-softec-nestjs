@@ -74,9 +74,4 @@ export class Task {
   })
   @JoinColumn({ name: 'category_id' })
   categoery: Category;
-
-  @Column({ name: 'goal_id', nullable: true, default: null })
-  @IsOptional()
-  @IsInt()
-  goalId?: number;
 }

@@ -38,7 +38,10 @@ export class UserService {
     return this.userRepo.findOne({ where: { email } });
   }
   async findById(id: number) {
-    return this.userRepo.findOne({ where: { id } });
+    return this.userRepo.findOne({
+      where: { id },
+      relations: { tasks: { categoery: true } },
+    });
   }
 
   async validateUser(userDto: LoginDto) {

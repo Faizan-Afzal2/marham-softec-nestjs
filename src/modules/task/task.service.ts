@@ -6,24 +6,45 @@ import { CreateTaskDto } from './dto/create-task.dto';
 import { Task } from './entities/task.entity';
 import { UpdateTaskDto } from './dto/update-task.dto';
 import * as chrono from 'chrono-node'; // we'll use this amazing free library!
+import { Category } from '../category/entities/category.entity';
+import axios from 'axios';
 
 @Injectable()
 export class TaskService {
   constructor(
     @InjectRepository(Task)
     private taskRepository: Repository<Task>,
+    @InjectRepository(Category)
+    private categoryRepo: Repository<Category>,
   ) {}
 
   async createTask(createTaskDto: CreateTaskDto) {
-    console.log('Here is dto:', createTaskDto);
+    // if (!createTaskDto.categoryId) {
+    //   // Call Python service to predict the category
+    //   const predictedCategory = await this.getCategoryFromPython(
+    //     createTaskDto.title,
+    //     createTaskDto.description ?? '',
+    //   );
+
+    //   // You might want to map 'Personal' => its internal categoryId (from your DB)
+    //   createTaskDto.categoryId =
+    //     await this.getCategoryIdFromName(predictedCategory);
+    // }
+    if (createTaskDto.categoryName) {
+      // Try to find the category by name (case-insensitive)
+      const category = await this.categoryRepo.findOne({
+        where: { name: createTaskDto.categoryName },
+      });
+      if (category) {
+        createTaskDto.categoryId = category.id;
+      }
+    }
 
     const task = this.taskRepository.create(createTaskDto);
     return await this.taskRepository.save(task);
   }
 
   async findAll(): Promise<Task[]> {
-    console.log('Ghelo');
-
     return await this.taskRepository.find();
   }
 
@@ -36,9 +57,8 @@ export class TaskService {
     console.log(task);
 
     if (!task) {
-      throw new NotFoundException(`Task with id ${id} not found`);
+      throw new NotFoundException(`Task with id ${id} no found`);
     }
-
     return task;
   }
 
@@ -67,5 +87,31 @@ export class TaskService {
 
     const title = input.length > 0 ? input : 'New Task'; // fallback if no text left
     return { title, dueDate };
+  }
+  private async getCategoryFromPython(
+    title: string,
+    description: string,
+  ): Promise<string> {
+    const payload = {
+      text: `${title} ${description}`,
+    };
+
+    try {
+      const response = await axios.post(
+        'http://localhost:8000/predict',
+        payload,
+      );
+      return response.data.category; // Expect { category: "Work" } from Python
+    } catch (error) {
+      console.error('Error calling Python service:', error);
+      throw new Error('Failed to predict task category');
+    }
+  }
+  private async getCategoryIdFromName(name: string): Promise<number> {
+    const category = await this.categoryRepo.findOne({ where: { name } });
+    if (!category) {
+      throw new Error(`Category '${name}' not found`);
+    }
+    return category.id;
   }
 }

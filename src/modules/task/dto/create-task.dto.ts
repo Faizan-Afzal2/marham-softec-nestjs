@@ -26,10 +26,9 @@ export class CreateTaskDto {
   dueDate?: Date;
 
   @IsOptional()
+  @IsString()
+  categoryName?: string;
+  @IsOptional()
   @IsNumber()
   categoryId?: number;
-
-  @IsOptional()
-  @IsInt()
-  goalId?: number;
 }

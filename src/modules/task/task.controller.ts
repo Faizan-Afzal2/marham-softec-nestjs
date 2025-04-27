@@ -21,16 +21,43 @@ export class TaskController {
 
   @Post('parse-text')
   async parseText(@Body() body: { text: string }) {
+    console.log('helloxs');
+
     return this.taskService.parseTaskInput(body.text);
   }
 
-  @UseGuards(JwtAuthGuard)
+  // @UseGuards(JwtAuthGuard)
   @Post('create-task')
-  create(@Req() req: any, @Body() createTaskDto: CreateTaskDto) {
-    const user = req.user as User;
+  create(@Body() createTaskDto: CreateTaskDto) {
+    console.log('Start functiom');
+
+    // const user = req.user as User;
+    // console.log(user);
+
+    // createTaskDto.userId = user.id;
+    return this.taskService.createTask(createTaskDto);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('add')
+  async addTask(@Req() req: any, @Body() createTaskDto: CreateTaskDto) {
+    const user: User = req.user;
+    console.log('User', user);
     createTaskDto.userId = user.id;
     return this.taskService.createTask(createTaskDto);
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Post('add')
+  async addFromRawText(@Req() req: any, @Body() createTaskDto: CreateTaskDto) {
+    const user: User = req.user;
+    console.log('User', user);
+    createTaskDto.userId = user.id;
+    return this.taskService.createTask(createTaskDto);
+  }
+
+  // @Post('get-all-category-tasks')
+  // async getAllCategoryTasks() {}
 
   @Get('get-all')
   findAll() {
